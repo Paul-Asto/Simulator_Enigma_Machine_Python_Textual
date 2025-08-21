@@ -1,0 +1,36 @@
+# Byte-compiled / optimized /
+# generated files
+__pycache__/
+*.py[cod]
+*$py.class
+# C extension
+*.so
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+*.egg-info
+sdist/
+# Installer logs
+pip-log.txt
+pip-delete-this-file.txt
+# Unit test / coverage reports
+.pytest_cache/
+htmlcov/
+.tox/
+.coverage
+.coveragerc
+# Virtual environment
+.venv/
+venv/
+env/
+# IDEs and editors
+.idea/
+.vscode/
+# OS generated files
+.DS_Store
+.project
+.vscode/
+Thumbs.db
