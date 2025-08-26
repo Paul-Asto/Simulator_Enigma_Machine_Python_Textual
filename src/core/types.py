@@ -1,7 +1,7 @@
 from typing import Literal, TypedDict, NotRequired
 
-TypeRotor = Literal["I", "II", "III", "IIII", "V"]
-TypeReflect = Literal["I", "II", "III", "IIII"]
+TypeRotor = Literal["I", "II", "III", "IIII", "V"] | str
+TypeReflect = Literal["I", "II", "III", "IIII"] | str
 
 AbcEnigma = Literal[
     "A",
@@ -32,7 +32,7 @@ AbcEnigma = Literal[
     "X",
     "Y",
     "Z",
-]
+] | str
 
 
 

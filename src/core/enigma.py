@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING, Optional, cast
 from src.core.types import DictDinamicConfEnigm, DictRequiredConfEnigm, AbcEnigma
 
 from src.core.utilities import from_letter_to_index, from_index_to_letter
+from src.core.config_enigma import ConfigEnigma, DEFAULT_CONFIG
 
 if TYPE_CHECKING:
-    from src.core.config_enigma import ConfigEnigma
     from src.core.rotor import Rotor
     from src.core.reflect import Reflect
     from src.core.admin_interchangers import AdminInterChangers
@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 
 class Enigma:
     
-    def __init__(self, init_config: "ConfigEnigma[DictRequiredConfEnigm]") -> None:
+    def __init__(self, init_config: ConfigEnigma[DictRequiredConfEnigm] = DEFAULT_CONFIG) -> None:
         init_data_built: DictBuildRequiredData = init_config.build_validated_required_data()
         
-        self.initial_config: "ConfigEnigma[DictRequiredConfEnigm]"= init_config
+        self.initial_config: "ConfigEnigma[DictDinamicConfEnigm]"= cast("ConfigEnigma[DictDinamicConfEnigm]", init_config)
         self.rotors: list["Rotor"] = init_data_built["rotors"]
         self.reflect: "Reflect" = init_data_built["reflect"]
         self.admin_intercharchers : "AdminInterChangers" = init_data_built["interchanger"]
@@ -38,10 +38,10 @@ class Enigma:
     
     
     def reset(self) -> None:
-        self.apply_config(cast("ConfigEnigma[DictDinamicConfEnigm]", self.initial_config))
+        self.apply_config(self.initial_config)
     
     
-    def apply_config(self, config: "ConfigEnigma[DictDinamicConfEnigm]") -> None:
+    def apply_config(self, config: ConfigEnigma[DictDinamicConfEnigm]) -> None:
         config_data_built: DictBuildDinamicData = config.build_validated_dinamic_data()
         
         new_rotors: list["Rotor"] | None = config_data_built["rotors"]
@@ -56,6 +56,9 @@ class Enigma:
         
         if not new_interchanges is None:
             self.admin_intercharchers = new_interchanges
+        
+        self.initial_config = config
+        self.quantity_movs = 0
     
     
     def mov_rotors(self) -> None:
@@ -68,41 +71,48 @@ class Enigma:
     
     
     def encryption_text(self, text: str) -> str:
-        list_real_letters: list[str] = [
-            self.admin_intercharchers.exchange(cast(AbcEnigma, letter))
+        list_input_real_letters: list[str] = [
+            self.admin_intercharchers.exchange(letter)
             for letter in text.upper()
         ]
         
         list_input_index: list[int] = [
             -1                    \
             if letter == " " else \
-            from_letter_to_index(cast(AbcEnigma, letter))
-            for letter in list_real_letters
+            from_letter_to_index( letter)
+            for letter in list_input_real_letters
         ]
         
-        list_output_index: list[int] = [
+        list_encript_index: list[int] = [
             -1
             if i == -1 \
             else self.process_encrypt(i)
             for i in list_input_index
         ]
         
-        list_letters: list[str] = [
+        list_output_letters: list[str] = [
             " " \
             if i == -1 \
             else from_index_to_letter(i)
-            for i in list_output_index
+            for i in list_encript_index
         ]
         
-        return "".join(list_letters)
+        list_output_real_letters: list[str] = [
+            self.admin_intercharchers.exchange( letter)
+            for letter in list_output_letters
+        ]
+        
+        return "".join(list_output_real_letters)
     
     
     def encryption_letter(self, letter: AbcEnigma) -> AbcEnigma:
         real_letter: AbcEnigma = self.admin_intercharchers.exchange(letter)
         input_index: int = from_letter_to_index(real_letter)
-        output_index: int = self.process_encrypt(input_index)
+        encript_index: int = self.process_encrypt(input_index)
+        output_letter: AbcEnigma = from_index_to_letter(encript_index)
+        real_output_letter: AbcEnigma = self.admin_intercharchers.exchange(output_letter)
         
-        return from_index_to_letter(output_index)
+        return real_output_letter
     
     
     def process_encrypt(self, index: int) -> int:

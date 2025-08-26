@@ -11,10 +11,19 @@ class AdminInterChangers:
     
     
     def __str__(self) -> str:
-        return  "Interchanger: " + " ".join([ k + v for k, v in self.exchange_data.items()]) + "\n"
+        repeat_chars: list[str] = []
+        result: list[str] =  []
+        
+        for k, v in  self.exchange_data.items():
+            if k in repeat_chars:
+                continue
+            result.append(k+v)
+            repeat_chars.append(v)
+        
+        return  "Interchanger: " + " ".join(result) + "\n"
     
     
-    def clear(self):
+    def clear(self) -> None:
         self.exchange_data.clear()
     
     

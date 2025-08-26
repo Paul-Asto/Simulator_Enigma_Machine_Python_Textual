@@ -1,4 +1,3 @@
-from typing import cast
 from src.core.constants import ABC, SIZE_ABC
 from src.core.types import AbcEnigma
 
@@ -11,7 +10,7 @@ def validate_index_letter_enigm(index: int) -> None:
 
 def from_index_to_letter(index: int) -> AbcEnigma:
     validate_index_letter_enigm(index)
-    return cast(AbcEnigma, ABC[index])
+    return ABC[index]
 
 
 def from_letter_to_index(letter: AbcEnigma) -> int:

@@ -1,6 +1,5 @@
-from typing import cast
 from src.core.utilities import from_letter_to_index, validate_index_letter_enigm
-from src.core.types import AbcEnigma, TypeReflect
+from src.core.types import  TypeReflect
 
 
 
@@ -12,7 +11,7 @@ class Reflect:
         self.__name: TypeReflect = name
         self.__cabling: str = cabling.upper()
         self.__data_encription: dict[int, int] = {
-            index: from_letter_to_index(cast(AbcEnigma, letter))
+            index: from_letter_to_index( letter)
             for index, letter in enumerate(self.cabling)
         }
     

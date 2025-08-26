@@ -1,4 +1,4 @@
-from typing import cast, Self
+from typing import Self
 from src.core.types import AbcEnigma, TypeRotor
 from src.core.utilities import (
     validate_index_letter_enigm,
@@ -21,7 +21,7 @@ class Rotor:
         self.__index_notch: int = from_letter_to_index(notch)
         
         self.__data_encription: dict[int, int] = {
-            index: from_letter_to_index(cast(AbcEnigma, letter))
+            index: from_letter_to_index( letter)
             for index, letter in enumerate(self.__cabling)
         }
         
