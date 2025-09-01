@@ -1,9 +1,9 @@
-from typing import Literal, TypedDict, NotRequired
+from typing import Literal
 
-TypeRotor = Literal["I", "II", "III", "IIII", "V"] | str
-TypeReflect = Literal["I", "II", "III", "IIII"] | str
+ModelRotor = Literal["I", "II", "III", "IV", "V" ,"VI", "VII", "VIII"] | str
+ModelReflect = Literal["I", "II", "III", "IV", "V"] | str
 
-AbcEnigma = Literal[
+LetterAbc = Literal[
     "A",
     "B",
     "C",
@@ -33,28 +33,3 @@ AbcEnigma = Literal[
     "Y",
     "Z",
 ] | str
-
-
-
-class DictConfigRotor(TypedDict):
-    rotor: TypeRotor
-    position: NotRequired[AbcEnigma]
-    ring: NotRequired[AbcEnigma]
-
-
-class DictConfigInterchanger(TypedDict):
-    letter_a: AbcEnigma
-    letter_b: AbcEnigma
-
-
-
-class DictDinamicConfEnigm(TypedDict):
-    rotors: NotRequired[list[DictConfigRotor]]
-    reflect: NotRequired[TypeReflect] 
-    interchanger: NotRequired[list[DictConfigInterchanger]]
-
-
-class DictRequiredConfEnigm(TypedDict):
-    rotors: list[DictConfigRotor]
-    reflect: TypeReflect 
-    interchanger: NotRequired[list[DictConfigInterchanger]] 

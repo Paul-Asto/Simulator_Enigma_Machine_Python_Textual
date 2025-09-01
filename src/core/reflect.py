@@ -1,14 +1,14 @@
-from src.core.utilities import from_letter_to_index, validate_index_letter_enigm
-from src.core.types import  TypeReflect
+from src.core.utilities import from_letter_to_index, validate_index_letter_enigm, from_index_to_letter
+from src.core.types import  ModelReflect, LetterAbc
 
 
 
 class Reflect:
     
-    def __init__(self, name: TypeReflect, cabling: str) -> None:
+    def __init__(self, model: ModelReflect, cabling: str) -> None:
         self.validate_cabling(cabling)
         
-        self.__name: TypeReflect = name
+        self.__model: ModelReflect = model
         self.__cabling: str = cabling.upper()
         self.__data_encription: dict[int, int] = {
             index: from_letter_to_index( letter)
@@ -17,7 +17,7 @@ class Reflect:
     
     
     def __str__(self) -> str:
-        result: str = f"Reflect: {self.name}\n"
+        result: str = f"Reflect: {self.model}\n"
         result += f"Cabling: {self.cabling}\n"
         
         return result
@@ -29,8 +29,8 @@ class Reflect:
     
     
     @property
-    def name(self) -> TypeReflect:
-        return self.__name
+    def model(self) -> ModelReflect:
+        return self.__model
     
     
     @property
@@ -42,12 +42,10 @@ class Reflect:
         validate_index_letter_enigm(index)
         
         return self.__data_encription[index]
-
-
-
-def build_reflect(name: TypeReflect) -> Reflect:
-    if   name == "I":     return Reflect(name="I", cabling="ENKQAUYWJICOPBLMDXZVFTHRGS")
-    elif name == "II":  return Reflect(name="II", cabling="RDOBJNTKXEHVPFCMZAWGYLSIUQ")
-    elif name == "III": return Reflect(name="III", cabling="YRUHQSLDPXNGOKMIEBFZCWVJAT")
     
-    raise Exception(f"Error en el build del relector: {name}")
+    
+    def encryption_letter(self, letter: LetterAbc) -> LetterAbc:
+        index: int = from_letter_to_index(letter)
+        encript_index: int =  self.__data_encription[index]
+
+        return from_index_to_letter(encript_index)

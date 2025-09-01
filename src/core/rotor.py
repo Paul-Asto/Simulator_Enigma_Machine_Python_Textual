@@ -1,19 +1,22 @@
-from typing import Self
-from src.core.types import AbcEnigma, TypeRotor
+from typing import Self, TYPE_CHECKING
+from src.core.types import LetterAbc, ModelRotor
 from src.core.utilities import (
     validate_index_letter_enigm,
     from_letter_to_index,
     from_index_to_letter,
 )
 
+if TYPE_CHECKING:
+    from src.core.config import DictConfigRotor
+
 
 
 class Rotor:
     
-    def __init__(self, name: TypeRotor, cabling: str, notch: AbcEnigma, position_initial: AbcEnigma = "A", position_ring: AbcEnigma = "A") -> None:
+    def __init__(self, model: ModelRotor, cabling: str, notch: LetterAbc, position_initial: LetterAbc = "A", position_ring: LetterAbc = "A") -> None:
         self.validate_cabling(cabling)
         
-        self.__name: TypeRotor = name
+        self.__model: ModelRotor = model
         self.__cabling: str = cabling.upper() 
         self.__len_cabling: int = len(cabling)
         self.__index_position: int = from_letter_to_index(position_initial)
@@ -32,7 +35,7 @@ class Rotor:
     
     
     def __str__(self) -> str:
-        result: str = f"Rotor: {self.name} \n"
+        result: str = f"Rotor: {self.model} \n"
         result += f"Cabling:  {self.cabling}\n"
         result += f"Position: {self.position_letter}\n"
         result += f"Notch:    {self.notch_letter}\n"
@@ -40,9 +43,20 @@ class Rotor:
         
         return result
     
+    
+    @property
+    def config_data(self) -> "DictConfigRotor":
+        return {
+            "position": self.position_letter,
+            "ring": self.ring_letter,
+            "model": self.model,
+        }
+    
+    
     @property
     def real_index_position(self) -> int:
         return self.__calculate_index_in_cycle(self.__index_position - self.__index_ring)
+    
     
     @property
     def cabling(self) -> str:
@@ -50,22 +64,22 @@ class Rotor:
     
     
     @property
-    def name(self) -> TypeRotor:
-        return self.__name
+    def model(self) -> ModelRotor:
+        return self.__model
     
     
     @property
-    def position_letter(self) -> AbcEnigma:
+    def position_letter(self) -> LetterAbc:
         return from_index_to_letter(self.__index_position)
     
     
     @property
-    def ring_letter(self) -> AbcEnigma:
+    def ring_letter(self) -> LetterAbc:
         return from_index_to_letter(self.__index_ring)
     
     
     @property
-    def notch_letter(self) -> AbcEnigma:
+    def notch_letter(self) -> LetterAbc:
         return from_index_to_letter(self.__index_notch + self.__index_ring)
     
     
@@ -91,12 +105,12 @@ class Rotor:
         self.__index_position = new_index
     
     
-    def set_position(self, letter: AbcEnigma)  -> Self:
+    def modify_position(self, letter: LetterAbc)  -> Self:
         self.__index_position = from_letter_to_index(letter)
         return self
     
     
-    def set_ring(self, letter: AbcEnigma)  -> Self:
+    def modify_ring(self, letter: LetterAbc)  -> Self:
         self.__index_ring = from_letter_to_index(letter)
         return self
     
@@ -110,6 +124,15 @@ class Rotor:
         return end_index
     
     
+    def encryption_letter(self, letter: LetterAbc) -> LetterAbc:
+        index = from_letter_to_index(letter)
+        
+        start_index: int = self.__calculate_index_in_cycle(index + self.real_index_position)
+        encrypt_index: int = self.__data_encription[start_index]
+        end_index: int = self.__calculate_index_in_cycle(encrypt_index - self.real_index_position)
+        return from_index_to_letter(end_index)
+    
+    
     def decrypt_index_letter(self, index: int) -> int:
         validate_index_letter_enigm(index)
         
@@ -117,14 +140,12 @@ class Rotor:
         encrypt_index: int = self.__data_decript[start_index]
         end_index: int = self.__calculate_index_in_cycle(encrypt_index - self.real_index_position)
         return end_index
-
-
-
-def build_rotor(name: TypeRotor) -> Rotor:
-    if   name == "I":    return Rotor(name= "I", cabling= "EKMFLGDQVZNTOWYHXUSPAIBRCJ", notch= "Q")
-    elif name == "II":   return Rotor(name= "II", cabling= "AJDKSIRUXBLHWTMCQGZNPYFVOE", notch= "E")
-    elif name == "III":  return Rotor(name= "III", cabling= "BDFHJLCPRTXVZNYEIWGAKMUSQO", notch= "V")
-    elif name == "IIII": return Rotor(name= "IIII", cabling= "ESOVPZJAYQUIRHXLNFTGKDCMWB", notch= "J")
-    elif name == "V":    return Rotor(name="V", cabling= "VZBRGITYUPSDNHLXAWMJQOFECK", notch= "Z")
     
-    raise Exception(f"Error en el build del rotor: {name}")
+    
+    def decrypt_letter(self, letter: LetterAbc) -> LetterAbc:
+        index: int = from_letter_to_index(letter)
+        
+        start_index: int = self.__calculate_index_in_cycle(index + self.real_index_position)
+        encrypt_index: int = self.__data_decript[start_index]
+        end_index: int = self.__calculate_index_in_cycle(encrypt_index - self.real_index_position)
+        return from_index_to_letter(end_index)
