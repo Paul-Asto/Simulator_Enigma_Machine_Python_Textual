@@ -7,6 +7,7 @@ from textual.widgets import Input, Header, Button
 from textual.widget import Widget
 from textual.containers import Horizontal, Vertical
 
+from src.core.constants import ABC
 from src.core.enigma import Enigma
 from src.core.config import ConfigEnigma, DictDinamicConfig
 
@@ -62,9 +63,12 @@ class SimulatorEnigmaApp(App[None]):
     
     
     def on_input_changed(self, event: Input.Changed) -> None:
+        # validar entrada
+        validated_input: str = "".join([letter for letter in self.input.value.upper() if letter in ABC or letter == " "])
+        
         self.enigma.reset()
         
-        self.input.value = self.input.value.upper()
+        self.input.value = validated_input
         input: str = self.input.value
         output: str = self.enigma.encryption_text(input)
         self.output.value = output

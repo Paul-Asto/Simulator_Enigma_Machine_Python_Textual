@@ -198,7 +198,7 @@ class Enigma:
         list_encript_index: list[int] = [
             -1
             if i == -1 \
-            else self.process_encrypt(i)
+            else self.__process_encrypt(i)
             for i in list_input_index
         ]
         
@@ -214,13 +214,13 @@ class Enigma:
     
     def encryption_letter(self, letter: LetterAbc) -> LetterAbc:
         input_index: int = from_letter_to_index(letter)
-        encript_index: int = self.process_encrypt(input_index)
+        encript_index: int = self.__process_encrypt(input_index)
         output_letter: LetterAbc = from_index_to_letter(encript_index)
         
         return output_letter
     
     
-    def process_encrypt(self, index: int) -> int:
+    def __process_encrypt(self, index: int) -> int:
         self.mov_rotors()
         
         index = self.__intercharcher.exchange_index(index)
