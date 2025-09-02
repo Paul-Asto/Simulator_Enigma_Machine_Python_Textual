@@ -47,6 +47,7 @@ Este proyecto usa la siguiente librería:
 ```
 textual
 pytest
+pyperclip
 ```
 
 ## 🚀 Ejecutar el proyecto

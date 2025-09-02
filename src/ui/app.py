@@ -1,6 +1,9 @@
 from typing import Generator
+import pyperclip
+
 from textual.app import App
-from textual.widgets import Input, Header
+from textual import on
+from textual.widgets import Input, Header, Button
 from textual.widget import Widget
 from textual.containers import Horizontal, Vertical
 
@@ -28,6 +31,11 @@ class SimulatorEnigmaApp(App[None]):
         margin-bottom: 2;
         height: 3;
     }
+
+    SimulatorEnigmaApp Button.copy{
+        margin-left: 5;
+        margin-top: 1;
+    }
     '''
     
     def __init__(self, enigma: Enigma) -> None:
@@ -46,6 +54,7 @@ class SimulatorEnigmaApp(App[None]):
             yield self.titulo
             yield self.input
             yield self.output
+            yield Button("Copy Output", id="copy")
             
             with Horizontal(classes="main-content"):
                 yield self.view_data_enigma
@@ -82,3 +91,9 @@ class SimulatorEnigmaApp(App[None]):
             info_reflect= self.enigma.model_reflect,
             info_interchanger= self.enigma.config_interchanger
         )
+    
+    
+    @on(Button.Pressed, "#copy")
+    def copy_output(self) -> None:
+        
+        pyperclip.copy(self.output.value)
